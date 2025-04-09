@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 갤러리</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #333;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background-color: white;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-info {
+            padding: 15px;
+            background-color: white;
+        }
+
+        .image-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .image-prompt {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .prompt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .gallery-item:hover .prompt-overlay {
+            opacity: 1;
+        }
+
+        .prompt-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .prompt-text {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #333;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>이미지 갤러리</h1>
+        <p class="subtitle">다양한 이미지를 감상하세요</p>
+        <div class="filters">
+            <button class="filter-btn active" data-category="all">전체보기</button>
+            <button class="filter-btn" data-category="landscape">풍경</button>
+            <button class="filter-btn" data-category="animal">동물</button>
+            <button class="filter-btn" data-category="abstract">추상</button>
+        </div>
+    </header>
+
+    <div class="gallery-container" id="gallery">
+        <!-- 이미지들은 JavaScript로 동적 생성됩니다 -->
+    </div>
+
+    <footer>
+        <p>생성형 AI 기술을 활용한 간단한 페이지 © 2025</p>
+    </footer>
+
+    <script>
+        // 갤러리 이미지 데이터
+        const galleryImages = [
+            {
+                id: 1,
+                title: "개(쭈니)",
+                src: "./images/image.jpg",
+                category: "animal",
+                prompt: "검은색 장모 치와와. 성격이 매우 온순하고 겁이 많다. 체구가 작고 털이 매우 부드럽다. 진짜 귀여움."
+            },
+            {
+                id: 2,
+                title: "도시 야경",
+                src: "./images/denys-nevozhai-D8iZPlX-2fs-unsplash.jpg",
+                category: "landscape",
+                prompt: "황혼 시간 상하이의 장엄한 항공 전망. 강 중심에 굽이치는 황푸강과 푸동 지역의 빛나는 고층 빌딩들이 어우러짐"
+            },
+            {
+                id: 3,
+                title: "추상적 예술 작품",
+                src: "./images/steve-johnson-QcmfTb-i3ko-unsplash.jpg",
+                category: "abstract",
+                prompt: "대조적인 색상의 블록이 특징인 추상 회화. 짙은 청색과 선명한 주황색이 주를 이루며, 흰색 선과 면이 두 색상 사이에서 균형을 잡고 있음"
+            },
+            {
+                id: 4,
+                title: "호랑이",
+                src: "./images/640px-Siberian_Tiger_by_Malene_Th.jpg",
+                category: "animal",
+                prompt: "나무 위에서 뻗은 자세를 취하고 있는 시베리아 호랑이. 선명한 주황색과 검은색 줄무늬가 특징적이며, 강인한 앞발과 집중된 시선으로 사냥꾼의 위엄을 보여주고 있음"
+            },
+            {
+                id: 5,
+                title: "열대 해변",
+                src: "./images/istockphoto-1442179368-612x612.jpg",
+                category: "landscape",
+                prompt: "열대 천국의 완벽한 해변 풍경. 투명한 터쿠아즈 블루 바닷물이 새하얀 모래사장과 만나는 곳에서 잔잔한 파도가 일렁임"
+            },
+            {
+                id: 6,
+                title: "기하학적 패턴",
+                src: "./images/george-pagan-iii-BB4teVwxm5k-unsplash.jpg",
+                category: "abstract",
+                prompt: "3D 입체 효과를 주는 정밀한 기하학적 패턴. 밝은 하늘색, 회색, 검은색의 정육면체가 반복적으로 배열되어 착시 효과를 만들어냄"
+            },
+            {
+                id: 7,
+                title: "산과 호수의 풍경",
+                src: "./images/odiseo-castrejon-58LP6H8klVw-unsplash.jpg",
+                category: "landscape",
+                prompt: "캐나다 밴프 국립공원의 모레인 호수와 록키 산맥의 웅장한 풍경. 에메랄드 청록색의 맑은 호수가 눈 덮인 거친 산봉우리와 완벽한 대비를 이룸"
+            },
+            {
+                id: 8,
+                title: "나선 은하의 장관",
+                src: "./images/SSC_20240909102642_O2.jpg",
+                category: "landscape",
+                prompt: "우주 공간에 떠 있는 웅장한 나선 은하의 모습. 밝게 빛나는 중심부와 보라색, 푸른색, 금색이 어우러진 나선팔이 우주의 암흑 속에서 장엄하게 빛나고 있으며, 무수한 별들이 은하 주변을 둘러싸고 있음"
+            },
+            {
+                id: 9,
+                title: "하얀 당근 토끼",
+                src: "./images/rabbit.jpg",
+                category: "animal",
+                prompt: "푸른 잔디밭 위에서 당근과 함께 있는 귀여운 하얀 토끼. 회색빛 귀와 검은 눈을 가진 아기 토끼가 신선한 당근 옆에서 포즈를 취하고 있음"
+            }
+        ];
+
+        // 갤러리 렌더링 함수
+        function renderGallery(images) {
+            const galleryContainer = document.getElementById('gallery');
+            galleryContainer.innerHTML = '';
+
+            images.forEach(image => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.category = image.category;
+
+                galleryItem.innerHTML = `
+                    <img src="${image.src}" alt="${image.title}">
+                    <div class="image-info">
+                        <h3 class="image-title">${image.title}</h3>
+                        <p class="image-prompt">${image.category}</p>
+                    </div>
+                    <div class="prompt-overlay">
+                        <h4 class="prompt-title">이미지 설명</h4>
+                        <p class="prompt-text">${image.prompt}</p>
+                    </div>
+                `;
+
+                galleryContainer.appendChild(galleryItem);
+            });
+        }
+
+        // 필터 기능
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 활성화된 버튼 스타일 변경
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const category = button.dataset.category;
+                    
+                    // 이미지 필터링
+                    if (category === 'all') {
+                        renderGallery(galleryImages);
+                    } else {
+                        const filteredImages = galleryImages.filter(image => image.category === category);
+                        renderGallery(filteredImages);
+                    }
+                });
+            });
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGallery(galleryImages);
+            setupFilters();
+        });
+    </script>
+</body>
+</html>
