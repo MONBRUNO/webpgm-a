@@ -58,3 +58,69 @@ function SimpleForm() {
 - 다양한 입력 예시: `<textarea>`, `<select>`, `<input type="checkbox">`, useRef 활용한 Uncontrolled Component
 
 ---
+
+
+# React 학습 정리 - Lifting State Up, Composition
+
+## ⬆️ Lifting State Up (상태 끌어올리기)
+
+- 여러 자식 컴포넌트가 동일한 상태를 공유할 때 부모 컴포넌트로 상태를 올려 중앙에서 관리
+
+### ✅ 구현 방식
+1. 부모 컴포넌트에 상태 정의
+2. 상태 변경 함수 정의 및 자식에 전달
+3. 자식 컴포넌트에서 이벤트 발생 시 부모 함수 호출
+4. 부모 상태를 다시 자식에 props로 전달
+
+### ✅ 예시 코드
+```jsx
+function Parent() {
+  const [text, setText] = useState("");
+  return (
+    <div>
+      <ChildA text={text} setText={setText} />
+      <ChildB text={text} />
+    </div>
+  );
+}
+
+function ChildA({ text, setText }) {
+  return <input value={text} onChange={(e) => setText(e.target.value)} />;
+}
+
+function ChildB({ text }) {
+  return <p>입력한 값: {text}</p>;
+}
+```
+
+---
+
+## 🔗 Composition vs Inheritance (합성 vs 상속)
+
+- 리액트는 **상속보다 합성**을 권장
+- 합성은 `props.children` 또는 컴포넌트를 조합하여 유연하게 구성
+- Specialization: 일부 기능을 확장하는 방식
+- Higher-Order Components (HOC): 기능을 확장하는 패턴 (현재는 Custom Hook 선호)
+
+### ✅ 예시 코드 (합성)
+```jsx
+function Card({ title, children }) {
+  return (
+    <div className="card">
+      <h1>{title}</h1>
+      {children}
+    </div>
+  );
+}
+
+function ProfileCard() {
+  return (
+    <Card title="Inje Lee">
+      <p>리액트를 배우고 있어요!</p>
+    </Card>
+  );
+}
+```
+
+---
+
