@@ -1,4 +1,4 @@
-# React 학습 정리 - Lists, Keys, Forms
+# Lists, Keys, Forms
 
 ## 📋 Lists & Keys
 
