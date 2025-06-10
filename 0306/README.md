@@ -1,5 +1,3 @@
-# Web Programming Ⅱ 요약 정리
-
 ## 📁 1. HTML & CSS 기초
 
 ### 📌 마크업 언어 & 메타데이터
