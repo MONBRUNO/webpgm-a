@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# React 엘리먼트 & 렌더링 요약
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🔹 React Element란?
 
-## Available Scripts
+- React 앱을 구성하는 가장 작은 단위 (HTML의 요소와 유사)
+- 실제 DOM이 아닌 가상 DOM(Virtual DOM)에 존재하는 JS 객체
+- 불변성(Immutable): 변경 불가, 새로운 엘리먼트를 생성하여 대체
 
-In the project directory, you can run:
+```jsx
+const element = <h1>Hello, world!</h1>;
+const element = React.createElement('h1', null, 'Hello, world!');
+```
 
-### `npm start`
+## 🔹 JSX와 React.createElement
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- JSX: HTML 유사 문법 → Babel을 통해 `React.createElement()`로 변환
+- JSX 없이 직접 `React.createElement()` 호출 가능
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```jsx
+// JSX
+const element = <h1>Hello!</h1>;
 
-### `npm test`
+// createElement
+const element = React.createElement("h1", null, "Hello!");
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🔹 Element vs Component
 
-### `npm run build`
+| 구분 | Element | Component |
+|------|---------|-----------|
+| 정의 | UI의 최소 단위 | Element들을 묶는 독립적 UI 블록 |
+| 형태 | 변경 불가 객체 | 함수 또는 클래스 |
+| 재사용 | 불가능 | 가능 |
+| 업데이트 | 새로 생성 필요 | state 변화로 자동 렌더링 |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🔹 렌더링(Rendering)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- 초기 렌더링: JSX → 가상 DOM 생성 → 실제 DOM 적용
+- 업데이트: state 또는 props 변경 → 새로운 가상 DOM 생성 → 변경 부분만 실제 DOM에 반영(Diffing)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```jsx
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
 
-### `npm run eject`
+## 🔹 DOM 업데이트 예시: 시계 만들기
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Clock.jsx
+```jsx
+function Clock() {
+  return (
+    <div>
+      <h1>안녕, 리액트!</h1>
+      <h2>현재 시간: {new Date().toLocaleTimeString()}</h2>
+    </div>
+  );
+}
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### App.js
+```jsx
+function App() {
+  return (
+    <div>
+      <Clock />
+    </div>
+  );
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### index.js
+```jsx
+const root = ReactDOM.createRoot(document.getElementById("root"));
+setInterval(() => {
+  root.render(<App />);
+}, 1000);
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔹 핵심 요약
 
-## Learn More
+- React의 엘리먼트는 변경 불가능하며, 상태 변경 시 새로운 엘리먼트를 만들어야 함
+- ReactDOM은 변경된 부분만 DOM에 반영하여 성능 최적화
+- JSX를 통해 직관적인 UI 개발이 가능하며, createElement()를 통해 직접 생성도 가능
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 📌 참고 자료
+- [React 공식 문서](https://react.dev/)
+- [W3Schools - HTML Elements](https://www.w3schools.com/html/html_elements.asp)
+- [소플의 처음 만난 리액트 강의자료]
